@@ -1,0 +1,355 @@
+/* ============================================================
+   Petroleum Station MS — Global Color Scheme (Teal Theme)
+   Primary Brand Color: #17a2b8  (Bootstrap "info" / Teal)
+   ============================================================ */
+
+:root {
+    /* ── Brand colours ─────────────────────────────────────── */
+    --primary-color:   #17a2b8;   /* Teal – main brand accent  */
+    --primary-dark:    #138496;   /* Darker teal – hover/gradient end */
+    --primary-light:   #d1ecf1;   /* Very light teal – backgrounds */
+
+    /* ── Semantic colours (Bootstrap-aligned) ──────────────── */
+    --success-color:   #28a745;
+    --success-bg:      #d4edda;
+    --success-border:  #c3e6cb;
+    --success-text:    #155724;
+
+    --danger-color:    #dc3545;
+    --danger-dark:     #c82333;
+    --danger-bg:       #f8d7da;
+    --danger-border:   #f5c6cb;
+    --danger-text:     #721c24;
+
+    --warning-color:   #ffc107;
+    --warning-dark:    #e0a800;
+
+    --secondary-color: #6c757d;
+    --secondary-dark:  #5a6268;
+
+    /* ── Neutral colours ───────────────────────────────────── */
+    --text-dark:       #212529;
+    --text-muted:      #6c757d;
+    --border-color:    #dee2e6;
+    --input-border:    #ced4da;
+    --input-text:      #495057;
+    --bg-page:         #f8f9fa;
+    --bg-card:         #ffffff;
+    --shadow-sm:       rgba(0, 0, 0, 0.10);
+    --shadow-md:       rgba(0, 0, 0, 0.15);
+}
+
+/* ── Base ───────────────────────────────────────────────── */
+body {
+    background-color: var(--bg-page);
+    color: var(--text-dark);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ── Navbar (Teal gradient) ─────────────────────────────── */
+.navbar.bg-info {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.90);
+    transition: color 0.2s;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+}
+
+/* ── Cards ──────────────────────────────────────────────── */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px var(--shadow-sm);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px var(--shadow-md);
+}
+
+.card-header {
+    background-color: var(--bg-page);
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* ── Statistic / Dashboard cards ────────────────────────── */
+.dashboard-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.dashboard-card .number {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.dashboard-card .label {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* stat card icons */
+.stat-icon {
+    color: var(--primary-color);
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+
+/* Primary teal button (maps to btn-info look) */
+.btn-info,
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color:     var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+.btn-info:hover,
+.btn-primary:hover {
+    background-color: var(--primary-dark) !important;
+    border-color:     var(--primary-dark) !important;
+}
+
+/* Edit / Warning button */
+.btn-warning {
+    background-color: var(--warning-color) !important;
+    border-color:     var(--warning-color) !important;
+    color: var(--text-dark) !important;
+}
+
+.btn-warning:hover {
+    background-color: var(--warning-dark) !important;
+    border-color:     var(--warning-dark) !important;
+}
+
+/* Delete / Danger button */
+.btn-danger {
+    background-color: var(--danger-color) !important;
+    border-color:     var(--danger-color) !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-dark) !important;
+    border-color:     var(--danger-dark) !important;
+}
+
+/* Secondary / Refresh button */
+.btn-secondary {
+    background-color: var(--secondary-color) !important;
+    border-color:     var(--secondary-color) !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-dark) !important;
+    border-color:     var(--secondary-dark) !important;
+}
+
+/* ── Search inputs ───────────────────────────────────────── */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+}
+
+/* ── Alerts ─────────────────────────────────────────────── */
+.alert-success {
+    background-color: var(--success-bg);
+    border-color:     var(--success-border);
+    color:            var(--success-text);
+}
+
+.alert-danger {
+    background-color: var(--danger-bg);
+    border-color:     var(--danger-border);
+    color:            var(--danger-text);
+}
+
+/* ── Badges / Category chips ────────────────────────────── */
+.badge.bg-info,
+.badge.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: #ffffff;
+}
+
+.badge.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--warning-color) !important;
+    color: var(--text-dark);
+}
+
+.badge.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Category-specific badges */
+.badge-cleaning    { background-color: var(--primary-color); color: #fff; }
+.badge-maintenance { background-color: var(--warning-color); color: var(--text-dark); }
+.badge-diagnostic  { background-color: #007bff;              color: #fff; }
+.badge-repair      { background-color: var(--danger-color);  color: #fff; }
+.badge-other       { background-color: var(--secondary-color); color: #fff; }
+
+/* ── Status badges ───────────────────────────────────────── */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.status-badge.active,
+.status-badge.success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+.status-badge.inactive,
+.status-badge.secondary {
+    background-color: #e9ecef;
+    color: var(--secondary-color);
+}
+
+.status-badge.warning {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.status-badge.danger {
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+.table thead th {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-color: var(--primary-dark);
+}
+
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+tr:nth-child(even) {
+    background-color: var(--primary-light);
+}
+
+/* ── Links ───────────────────────────────────────────────── */
+a {
+    color: var(--primary-color);
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* ── Forms ───────────────────────────────────────────────── */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background: var(--bg-card);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px var(--shadow-sm);
+}
+
+/* ── Action buttons group ────────────────────────────────── */
+.btn-group,
+.action-btns {
+    display: flex;
+    gap: 5px;
+}
+
+/* ── Section page headers ────────────────────────────────── */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #ffffff;
+    padding: 20px 24px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+}
+
+.page-header h1,
+.page-header h2,
+.page-header h3 {
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.page-header .text-muted {
+    color: rgba(255, 255, 255, 0.80) !important;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: var(--bg-page);
+    border-top: 1px solid var(--border-color);
+}
+
+/* ── Bootstrap variable override — make "primary" = teal ── */
+:root {
+    --bs-primary:          #17a2b8;
+    --bs-primary-rgb:      23, 162, 184;
+    --bs-link-color:       #17a2b8;
+    --bs-link-hover-color: #138496;
+}
+
+/* text-primary → teal */
+.text-primary { color: var(--primary-color) !important; }
+
+/* borders */
+.border-primary         { border-color: var(--primary-color) !important; }
+.border-primary-subtle  { border-color: rgba(23, 162, 184, 0.4) !important; }
+
+/* subtle backgrounds */
+.bg-info-subtle,
+.bg-primary-subtle {
+    background-color: var(--primary-light) !important;
+    color: var(--primary-dark) !important;
+}
+
+/* icon-circle helper used in dashboard pages */
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+/* Teal info background with teal text */
+.bg-info.bg-opacity-10 { background-color: var(--primary-light) !important; }
+.bg-info { background-color: var(--primary-color) !important; }
+
+/* Interactive helpers */
+.hover-teal:hover {
+    color: var(--primary-dark) !important;
+    text-decoration: underline !important;
+}

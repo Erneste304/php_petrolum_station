@@ -1,0 +1,2 @@
+Table loyalty_reward exists.
+Table loyalty_redemption exists.

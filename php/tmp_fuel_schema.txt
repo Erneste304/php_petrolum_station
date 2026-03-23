@@ -1,0 +1,190 @@
+--- Table: fuel_type ---
+Array
+(
+    [0] => Array
+        (
+            [Field] => fuel_id
+            [Type] => int
+            [Null] => NO
+            [Key] => PRI
+            [Default] => 
+            [Extra] => auto_increment
+        )
+
+    [1] => Array
+        (
+            [Field] => fuel_name
+            [Type] => varchar(50)
+            [Null] => NO
+            [Key] => UNI
+            [Default] => 
+            [Extra] => 
+        )
+
+    [2] => Array
+        (
+            [Field] => price_per_liter
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+)
+
+--- Table: tank ---
+Array
+(
+    [0] => Array
+        (
+            [Field] => tank_id
+            [Type] => int
+            [Null] => NO
+            [Key] => PRI
+            [Default] => 
+            [Extra] => auto_increment
+        )
+
+    [1] => Array
+        (
+            [Field] => fuel_id
+            [Type] => int
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [2] => Array
+        (
+            [Field] => capacity
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [3] => Array
+        (
+            [Field] => current_stock
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+)
+
+--- Table: pump ---
+Array
+(
+    [0] => Array
+        (
+            [Field] => pump_id
+            [Type] => int
+            [Null] => NO
+            [Key] => PRI
+            [Default] => 
+            [Extra] => auto_increment
+        )
+
+    [1] => Array
+        (
+            [Field] => station_id
+            [Type] => int
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [2] => Array
+        (
+            [Field] => fuel_id
+            [Type] => int
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+)
+
+--- Table: sale ---
+Array
+(
+    [0] => Array
+        (
+            [Field] => sale_id
+            [Type] => int
+            [Null] => NO
+            [Key] => PRI
+            [Default] => 
+            [Extra] => auto_increment
+        )
+
+    [1] => Array
+        (
+            [Field] => customer_id
+            [Type] => int
+            [Null] => YES
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [2] => Array
+        (
+            [Field] => employee_id
+            [Type] => int
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [3] => Array
+        (
+            [Field] => pump_id
+            [Type] => int
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [4] => Array
+        (
+            [Field] => quantity
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [5] => Array
+        (
+            [Field] => total_amount
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [6] => Array
+        (
+            [Field] => sale_date
+            [Type] => datetime
+            [Null] => YES
+            [Key] => MUL
+            [Default] => CURRENT_TIMESTAMP
+            [Extra] => DEFAULT_GENERATED
+        )
+
+)
+
