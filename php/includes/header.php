@@ -205,6 +205,18 @@
 
     <!-- Main Content Container -->
     <div class="container mt-4">
+        <!-- Back Button for Service Navigation -->
+        <?php 
+        $current_page = basename($_SERVER['PHP_SELF']);
+        $excluded_pages = ['index.php', 'receptionist_dashboard.php', 'accountant_dashboard.php', 'login.php', 'register.php'];
+        if (!in_array($current_page, $excluded_pages)): ?>
+            <div class="mb-4 d-print-none">
+                <a href="javascript:history.back()" class="btn btn-white shadow-sm rounded-pill px-4 border-0 transition-hover">
+                    <i class="bi bi-arrow-left-circle-fill text-info me-2"></i>
+                    <span class="fw-bold text-dark">Go Back</span>
+                </a>
+            </div>
+        <?php endif; ?>
         <!-- Flash Messages -->
         <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
