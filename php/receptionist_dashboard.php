@@ -1,12 +1,5 @@
-<?php
-require_once 'includes/auth_middleware.php';
 require_once 'config/database.php';
-
-if (!isAdmin() && !isStaff() && !isReceptionist()) {
-    $_SESSION['error'] = "Access denied.";
-    header("Location: index.php");
-    exit();
-}
+requirePermission('reception');
 
 include 'includes/header.php';
 
@@ -36,6 +29,7 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
 </div>
 
 <div class="row g-4 mb-5">
+    <?php if (hasPermission('reports')): ?>
     <!-- Problem Reports -->
     <div class="col-md-4 col-lg-2">
         <div class="card border-0 shadow-sm h-100 premium-card">
@@ -48,6 +42,7 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
             </div>
         </div>
     </div>
+    <?php endif; ?>
     
     <!-- Payroll Submission -->
     <div class="col-md-4 col-lg-2">
@@ -62,6 +57,7 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
         </div>
     </div>
 
+    <?php if (hasPermission('fuel')): ?>
     <!-- Service Guide -->
     <div class="col-md-4 col-lg-2">
         <div class="card border-0 shadow-sm h-100 premium-card">
@@ -74,7 +70,9 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (hasPermission('sales')): ?>
     <!-- Record Sale -->
     <div class="col-md-4 col-lg-2">
         <div class="card border-0 shadow-sm h-100 premium-card">
@@ -88,7 +86,9 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (hasPermission('shares')): ?>
     <!-- Share Approvals -->
     <div class="col-md-4 col-lg-4">
         <div class="card border-0 shadow-sm h-100 premium-card border-start border-warning border-4">
@@ -107,6 +107,7 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
 <style>

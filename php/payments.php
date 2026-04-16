@@ -1,12 +1,5 @@
-<?php
-require_once 'includes/auth_middleware.php';
 require_once 'config/database.php';
-
-if (!isAdmin() && !isAccountant()) {
-    $_SESSION['error'] = "Access denied.";
-    header("Location: index.php");
-    exit();
-}
+requirePermission('accounting');
 
 include 'includes/header.php';
 

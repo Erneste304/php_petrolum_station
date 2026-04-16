@@ -17,14 +17,14 @@ $tierBg = 'bronze-bg';
 
 $customerId = $_SESSION['customer_id'] ?? null;
 
-// For Admin: allow selecting a customer to view their points
-if (isAdmin() && isset($_GET['view_as'])) {
+// Allow viewing as a different customer if permitted (e.g., for staff/admin lookup)
+if (hasPermission('view_any_loyalty') && isset($_GET['view_as'])) {
     $customerId = $_GET['view_as'];
 }
 
 if (!$customerId) {
-    if (isAdmin()) {
-        $error = "Select a customer from the Users list to view their loyalty profile.";
+    if (hasPermission('view_any_loyalty')) {
+        $error = "Select a customer from the list below to view their loyalty profile.";
         // Fetch customers for admin selection
         $customers_list = $pdo->query("SELECT customer_id, name FROM customer ORDER BY name")->fetchAll();
     } else {
@@ -67,31 +67,42 @@ if (!$customerId) {
         $error = "Failed to calculate points.";
     }
 
-    // 2. Handle Redemption
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['redeem_reward'])) {
-        $rewardId = $_POST['reward_id'] ?? '';
-        
-        if (!empty($rewardId)) {
-            try {
-                // Check reward cost
-                $stmt = $pdo->prepare('SELECT name, points_cost FROM loyalty_reward WHERE reward_id = ?');
-                $stmt->execute([$rewardId]);
-                $reward = $stmt->fetch();
+    // 2. Handle Redemption & Fulfillment
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['redeem_reward'])) {
+            $rewardId = $_POST['reward_id'] ?? '';
+            
+            if (!empty($rewardId)) {
+                try {
+                    // Check reward cost
+                    $stmt = $pdo->prepare('SELECT name, points_cost FROM loyalty_reward WHERE reward_id = ?');
+                    $stmt->execute([$rewardId]);
+                    $reward = $stmt->fetch();
 
-                if ($reward) {
-                    if ($currentPoints >= $reward['points_cost']) {
-                        $stmt = $pdo->prepare('INSERT INTO loyalty_redemption (customer_id, reward_id) VALUES (?, ?)');
-                        $stmt->execute([$customerId, $rewardId]);
-                        
-                        $success = "Successfully redeemed: " . htmlspecialchars($reward['name']) . "! You can claim this during your next visit.";
-                        $currentPoints -= $reward['points_cost'];
-                        $pointsSpent += $reward['points_cost'];
-                    } else {
-                        $error = "You do not have enough points for this reward.";
+                    if ($reward) {
+                        if ($currentPoints >= $reward['points_cost']) {
+                            $stmt = $pdo->prepare('INSERT INTO loyalty_redemption (customer_id, reward_id, status) VALUES (?, ?, "Pending")');
+                            $stmt->execute([$customerId, $rewardId]);
+                            
+                            $success = "Successfully redeemed: " . htmlspecialchars($reward['name']) . "! You can claim this during your next visit.";
+                            $currentPoints -= $reward['points_cost'];
+                            $pointsSpent += $reward['points_cost'];
+                        } else {
+                            $error = "You do not have enough points for this reward.";
+                        }
                     }
+                } catch (PDOException $e) {
+                    $error = "Redemption failed.";
                 }
+            }
+        } elseif (isset($_POST['fulfill_redemption']) && hasPermission('loyalty') && !isCustomer()) {
+            $redemptionId = $_POST['redemption_id'];
+            try {
+                $stmt = $pdo->prepare('UPDATE loyalty_redemption SET status = "Fulfilled" WHERE redemption_id = ?');
+                $stmt->execute([$redemptionId]);
+                $success = "Reward marked as fulfilled!";
             } catch (PDOException $e) {
-                $error = "Redemption failed.";
+                $error = "Failed to update status.";
             }
         }
     }
@@ -323,11 +334,22 @@ include 'includes/header.php';
                                     <span class="fw-semibold"><?php echo htmlspecialchars($history['name']); ?></span>
                                     <span class="text-danger small fw-bold">-<?php echo $history['points_cost']; ?> pts</span>
                                 </div>
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted"><?php echo date('d M, Y', strtotime($history['redeemed_date'])); ?></small>
-                                    <span class="badge rounded-pill <?php echo $history['status'] == 'Fulfilled' ? 'bg-success' : 'bg-warning text-dark'; ?> bg-opacity-10 py-1 px-2 border-0" style="font-size: 0.65rem;">
-                                        <?php echo $history['status']; ?>
-                                    </span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge rounded-pill <?php echo $history['status'] == 'Fulfilled' ? 'bg-success' : 'bg-warning text-dark'; ?> bg-opacity-10 py-1 px-2 border-0 me-2" style="font-size: 0.65rem;">
+                                            <?php echo $history['status']; ?>
+                                        </span>
+                                        <?php if ($history['status'] === 'Pending' && hasPermission('loyalty') && !isCustomer()): ?>
+                                            <form method="POST" style="display-inline">
+                                                <input type="hidden" name="fulfill_redemption" value="1">
+                                                <input type="hidden" name="redemption_id" value="<?php echo $history['redemption_id']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-link p-0 text-success border-0" title="Mark as Fulfilled">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>

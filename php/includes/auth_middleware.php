@@ -81,19 +81,22 @@ function hasPermission($module_name)
 {
     global $pdo;
     
-    
     if (isAdmin()) {
         return true;
     }
     
-    
     try {
-        if (!isset($_SESSION['user_id']) || !isset($pdo)) {
+        if (!isset($_SESSION['role']) || !isset($pdo)) {
             return false;
         }
         
-        $stmt = $pdo->prepare("SELECT 1 FROM user_permission WHERE user_id = ? AND module_name = ?");
-        $stmt->execute([$_SESSION['user_id'], $module_name]);
+    
+        $stmt = $pdo->prepare("
+            SELECT 1 FROM role_permission rp
+            JOIN permission p ON rp.permission_id = p.permission_id
+            WHERE rp.role = ? AND p.permission_name = ?
+        ");
+        $stmt->execute([$_SESSION['role'], $module_name]);
         return $stmt->fetch() !== false;
     } catch (Exception $e) {
         return false;
@@ -103,7 +106,7 @@ function hasPermission($module_name)
 
 function requirePermission($module_name)
 {
-    // Explicit Restriction: Partners cannot manage employees or users
+    
     if (isPartner() && in_array($module_name, ['employees', 'users'])) {
         $_SESSION['error'] = "Access denied. Partners are restricted from managing personnel.";
         header('Location: ../index.php');

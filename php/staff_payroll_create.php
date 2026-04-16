@@ -1,12 +1,6 @@
-<?php
-require_once 'includes/auth_middleware.php';
 require_once 'config/database.php';
-
-if (!isAdmin() && !isStaff() && !isAccountant() && !isReceptionist()) {
-    $_SESSION['error'] = "Access denied.";
-    header("Location: index.php");
-    exit();
-}
+// Payroll is typically handled by Accountants or Station Receptionists
+requirePermission('reception');
 
 // Fetch all active employees
 $employees = $pdo->query("SELECT * FROM employee WHERE is_active = 1")->fetchAll();

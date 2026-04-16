@@ -16,8 +16,8 @@ $customerId = $_SESSION['customer_id'] ?? null;
 $role = $_SESSION['role'];
 
 if (!$customerId) {
-    if (isAdmin()) {
-        $error = "As an admin, you can view this page but cannot book a car wash without a customer profile.";
+    if (hasPermission('manage_services')) {
+        $error = "As a manager/partner, you can view this page but cannot book a car wash without a customer profile.";
     } else {
         $error = "Customer profile not found. Please contact support.";
     }
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_service'])) {
     $description = trim($_POST['description'] ?? '');
     $price = $_POST['price'] ?? 0;
     $duration = $_POST['duration'] ?? 30;
-    $isApproved = isAdmin() ? 1 : 0;
+    $isApproved = hasPermission('approve_services') ? 1 : 0;
 
     if (empty($name) || $price <= 0) {
         $error = 'Service name and price are required.';
@@ -87,7 +87,7 @@ if (isAdmin() && isset($_GET['approve_service'])) {
 }
 
 // 4. Handle Booking Status Update (Admin/Staff)
-if ((isAdmin() || isStaff()) && isset($_POST['update_booking_status'])) {
+if (hasPermission('manage_bookings') && isset($_POST['update_booking_status'])) {
     $bookingId = $_POST['booking_id'];
     $newStatus = $_POST['status'];
     try {
@@ -177,7 +177,7 @@ include 'includes/header.php';
     </div>
 <?php endif; ?>
 
-<?php if ($role === 'admin' && !empty($pendingServices)): ?>
+<?php if (hasPermission('approve_services') && !empty($pendingServices)): ?>
     <div class="card shadow-sm mb-4 border-warning">
         <div class="card-header bg-warning bg-opacity-10 text-dark">
             <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i> Pending Service Approvals</h5>
@@ -216,7 +216,7 @@ include 'includes/header.php';
 <?php endif; ?>
 
 <div class="row">
-    <?php if (isPartner() || isAdmin()): ?>
+    <?php if (hasPermission('manage_services')): ?>
         <!-- Add Service Form -->
         <div class="col-lg-12 mb-4">
             <div class="card shadow-sm border-0">
@@ -326,7 +326,7 @@ include 'includes/header.php';
                 <?php endforeach; ?>
             </div>
 
-            <?php if (isAdmin() || isStaff()): ?>
+            <?php if (hasPermission('manage_bookings')): ?>
                 <!-- Manage All Bookings -->
                 <div class="card shadow-sm mt-4 border-info">
                     <div class="card-header bg-info bg-opacity-10 text-dark">

@@ -1,12 +1,5 @@
-<?php
-require_once 'includes/auth_middleware.php';
 require_once 'config/database.php';
-
-if (!isAdmin() && !isStaff() && !isReceptionist() && !isAccountant()) {
-    $_SESSION['error'] = "Access denied.";
-    header("Location: index.php");
-    exit();
-}
+requirePermission('reception');
 
 // Handle problem handling actions
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {

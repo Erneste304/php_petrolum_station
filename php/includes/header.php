@@ -36,7 +36,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo $dir_prefix; ?>dashboard/index.php">
+                        <a class="nav-link" href="<?php echo $dir_prefix; ?>customers/index.php">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
                     </li>
@@ -70,8 +70,8 @@
                                 <i class="bi bi-person-badge"></i> Customers
                             </a>
                             <ul class="dropdown-menu shadow">
-                                <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>dashboard/index.php">View All</a></li>
-                                <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>dashboard/create.php">Add New</a></li>
+                                <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>customers/index.php">View All</a></li>
+                                <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>customers/create.php">Add New</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>
@@ -121,7 +121,7 @@
                         $profile_photo = $header_user['profile_photo'] ?? null;
                     ?>
                         <!-- Services Dropdown -->
-                        <?php if (hasPermission('fuel_delivery') || hasPermission('car_wash') || hasPermission('loyalty')): ?>
+                        <?php if (hasPermission('fuel_delivery') || hasPermission('car_wash') || hasPermission('loyalty') || hasPermission('shares')): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-grid"></i> Services
@@ -130,12 +130,22 @@
                                 <?php if (hasPermission('fuel_delivery')): ?>
                                 <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>fuel_delivery.php"><i class="bi bi-truck me-2 text-primary"></i> Fuel Delivery</a></li>
                                 <?php endif; ?>
+
+                                <?php if (hasPermission('loyalty')): ?>
                                 <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>loyalty.php"><i class="bi bi-gift me-2 text-warning"></i> Loyalty & Rewards</a></li>
-                                <?php if (hasPermission('car_wash')): ?>
+                                <?php endif; ?>
+
+                                <?php if (hasPermission('car_wash') || hasPermission('shares')): ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><h6 class="dropdown-header">Partner Services</h6></li>
+                                
+                                <?php if (hasPermission('car_wash')): ?>
                                 <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>car_wash.php"><i class="bi bi-car-front me-2 text-info"></i> Car Detailing</a></li>
+                                <?php endif; ?>
+
+                                <?php if (hasPermission('shares')): ?>
                                 <li><a class="dropdown-item" href="<?php echo $dir_prefix; ?>partner_shares.php"><i class="bi bi-graph-up-arrow me-2 text-warning"></i> Buy Shares</a></li>
+                                <?php endif; ?>
                                 <?php endif; ?>
                             </ul>
                         </li>
@@ -207,12 +217,17 @@
     <div class="container mt-4">
         <!-- Back Button for Service Navigation -->
         <?php 
-        $current_page = basename($_SERVER['PHP_SELF']);
+        $full_path = $_SERVER['PHP_SELF'];
+        $current_page = basename($full_path);
+        
+        
+        $is_root_index = (strpos($full_path, 'php/index.php') !== false || $full_path == '/index.php');
         $excluded_pages = ['index.php', 'receptionist_dashboard.php', 'accountant_dashboard.php', 'login.php', 'register.php'];
-        if (!in_array($current_page, $excluded_pages)): ?>
-            <div class="mb-4 d-print-none">
-                <a href="javascript:history.back()" class="btn btn-white shadow-sm rounded-pill px-4 border-0 transition-hover">
-                    <i class="bi bi-arrow-left-circle-fill text-info me-2"></i>
+        
+        if (!in_array($current_page, $excluded_pages) || (!$is_root_index && $current_page == 'index.php')): ?>
+            <div class="mb-4 d-print-none animate__animated animate__fadeInLeft">
+                <a href="javascript:history.back()" class="btn btn-white shadow-sm rounded-pill px-4 border-0 transition-hover py-2">
+                    <i class="bi bi-arrow-left-circle-fill text-info fs-5 me-2"></i>
                     <span class="fw-bold text-dark">Go Back</span>
                 </a>
             </div>
