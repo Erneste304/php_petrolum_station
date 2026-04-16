@@ -1,5 +1,13 @@
-require_once 'config/database.php';
-requirePermission('reception');
+<?php
+require_once __DIR__ . '/includes/auth_middleware.php';
+require_once __DIR__ . '/config/database.php';
+
+if (!isAdmin() && !isStaff() && !isPumpAttendant()) {
+     $_SESSION['error'] = 'Access denied. This page is for staff only.';
+     header('Location: index.php');
+     exit;
+ }
+
 
 // Handle problem handling actions
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
@@ -32,7 +40,7 @@ $reports = $pdo->query("
     ORDER BY pr.is_critical DESC, pr.created_at DESC
 ")->fetchAll();
 
-include 'includes/header.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <div class="row mb-4 align-items-center">
@@ -105,4 +113,4 @@ include 'includes/header.php';
     <?php endif; ?>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>

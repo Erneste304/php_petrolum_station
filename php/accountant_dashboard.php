@@ -1,5 +1,13 @@
-require_once 'config/database.php';
-requirePermission('accounting');
+<?php
+require_once __DIR__ . '/includes/auth_middleware.php';
+require_once __DIR__ . '/config/database.php';
+
+if (!isAdmin() && !isAccountant()) {
+    $_SESSION['error'] = 'Access denied. This page is for accountants only.';
+    header('Location: index.php');
+    exit;
+}
+
 
 // Handle permission request
 if (isset($_POST['request_permission'])) {
@@ -13,7 +21,7 @@ $active_perms = $pdo->prepare("SELECT * FROM finance_permission_request WHERE ac
 $active_perms->execute([$_SESSION['user_id']]);
 $current_perms = $active_perms->fetchAll(PDO::FETCH_COLUMN, 3); // Get module_names
 
-include 'includes/header.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <div class="row mb-4">
@@ -166,4 +174,4 @@ include 'includes/header.php';
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>

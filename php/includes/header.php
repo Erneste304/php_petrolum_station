@@ -152,9 +152,11 @@
                         <?php endif; ?>
 
                         <!-- Role-Specific Links -->
-                        <?php if (isReceptionist()): ?>
+                        <?php if (isStaff() || isPumpAttendant()): ?>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?php echo $dir_prefix; ?>receptionist_dashboard.php"><i class="bi bi-cpu"></i> Control Room</a>
+                                <a class="nav-link" href="<?php echo $dir_prefix; ?>receptionist_dashboard.php">
+                                    <i class="bi bi-shield-lock"></i> <?php echo isStaff() ? 'Supervisor Hub' : 'Control Room'; ?>
+                                </a>
                             </li>
                         <?php endif; ?>
 

@@ -1,7 +1,15 @@
-require_once 'config/database.php';
-requirePermission('reception');
+<?php
+require_once __DIR__ . '/includes/auth_middleware.php';
+require_once __DIR__ . '/config/database.php';
 
-include 'includes/header.php';
+// Allow admin, staff, and receptionist roles to access this dashboard
+if (!isAdmin() && !isStaff() && !isPumpAttendant()) {
+    $_SESSION['error'] = 'Access denied. This dashboard is for staff only.';
+    header('Location: index.php');
+    exit;
+}
+
+include __DIR__ . '/includes/header.php';
 
 // Fetch some stats for receptionist
 $customers_count = $pdo->query("SELECT COUNT(*) FROM customer")->fetchColumn();
@@ -13,14 +21,14 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
         <div class="card border-0 shadow-lg p-4 bg-gradient-staff text-white overflow-hidden position-relative" style="border-radius: 20px; background: linear-gradient(135deg, #0d6efd, #003399);">
             <div class="row align-items-center position-relative" style="z-index: 2;">
                 <div class="col-auto">
-                    <i class="bi bi-cpu display-3 opacity-75"></i>
+                    <i class="bi bi-shield-lock display-3 opacity-75"></i>
                 </div>
                 <div class="col">
-                    <h1 class="fw-bold mb-1">Staff Control Room</h1>
-                    <p class="mb-0 opacity-75">Operations Management & Service Guidance Dashboard</p>
+                    <h1 class="fw-bold mb-1">Supervisor Control Room</h1>
+                    <p class="mb-0 opacity-75">High-Level Oversight & Multi-Stage Approval Center</p>
                 </div>
                 <div class="col-auto">
-                    <div class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold">Active Shift: <?php echo date('H:i'); ?></div>
+                    <div class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold">Supervisor ID: <?php echo $_SESSION['username']; ?></div>
                 </div>
             </div>
             <i class="bi bi-shield-check position-absolute bottom-0 end-0 display-1 opacity-10 mb-n4 me-n4"></i>
@@ -28,7 +36,74 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
     </div>
 </div>
 
+<?php
+// Supervisor Stats
+$pending_payrolls = $pdo->query("SELECT COUNT(*) FROM payroll_submissions WHERE status = 'Pending'")->fetchColumn();
+$pending_shares = $pdo->query("SELECT COUNT(*) FROM share_requests WHERE status = 'Pending'")->fetchColumn();
+?>
+
 <div class="row g-4 mb-5">
+    <!-- User Management Module -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 premium-card border-bottom border-primary border-4">
+            <div class="card-body p-4">
+                <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3">
+                    <i class="bi bi-people-fill h2 mb-0"></i>
+                </div>
+                <h5 class="fw-bold">User Oversight</h5>
+                <p class="small text-muted mb-4">Manage Receptionists, Partners, and Investors records.</p>
+                <div class="d-grid gap-2">
+                    <a href="users/index.php" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">Users List</a>
+                    <a href="employees/index.php" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">Receptionists</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Oversight Module -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 premium-card border-bottom border-info border-4">
+            <div class="card-body p-4">
+                <div class="icon-circle bg-info bg-opacity-10 text-info mb-3">
+                    <i class="bi bi-person-badge h2 mb-0"></i>
+                </div>
+                <h5 class="fw-bold">Customer CRM</h5>
+                <p class="small text-muted mb-4">Monitor customer base activity and vehicle registration.</p>
+                <a href="customers/index.php" class="btn btn-outline-info w-100 rounded-pill fw-bold">View Customers</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval Hub Module -->
+    <div class="col-md-6 col-lg-6">
+        <div class="card border-0 shadow-sm h-100 premium-card bg-light">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-patch-check-fill text-warning me-2"></i> Approval Hub</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white rounded-3 shadow-sm d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Pending Payrolls</small>
+                                <span class="h4 fw-bold mb-0"><?php echo $pending_payrolls; ?></span>
+                            </div>
+                            <a href="admin_payroll_approval.php" class="btn btn-sm btn-warning rounded-circle"><i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white rounded-3 shadow-sm d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Pending Shares</small>
+                                <span class="h4 fw-bold mb-0"><?php echo $pending_shares; ?></span>
+                            </div>
+                            <a href="admin_shares_requests.php" class="btn btn-sm btn-warning rounded-circle"><i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <p class="small text-muted mt-3 mb-0">Verification is required before items reach the Super Admin for finalization.</p>
+            </div>
+        </div>
+    </div>
+</div>
     <?php if (hasPermission('reports')): ?>
     <!-- Problem Reports -->
     <div class="col-md-4 col-lg-2">
@@ -56,6 +131,21 @@ $recent_sales = $pdo->query("SELECT s.*, c.name as customer_name FROM sale s LEF
             </div>
         </div>
     </div>
+
+    <?php if (hasPermission('reports')): ?>
+    <!-- Supervisor Monitoring -->
+    <div class="col-md-4 col-lg-2">
+        <div class="card border-0 shadow-sm h-100 premium-card">
+            <div class="card-body p-4 text-center">
+                <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-4 mx-auto">
+                    <i class="bi bi-graph-up-arrow h2"></i>
+                </div>
+                <h5 class="fw-bold">Monitoring</h5>
+                <a href="supervisor_reports.php" class="btn btn-primary w-100 rounded-pill fw-bold px-0">Stats</a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <?php if (hasPermission('fuel')): ?>
     <!-- Service Guide -->

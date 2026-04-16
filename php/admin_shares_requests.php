@@ -3,11 +3,11 @@ require_once 'includes/auth_middleware.php';
 require_once 'config/database.php';
 
 // Staff and Admin can manage requests
-if (!isAdmin() && !isStaff() && !isReceptionist()) {
-    $_SESSION['error'] = "Access denied.";
-    header("Location: index.php");
-    exit();
-}
+if (!isAdmin() && !isStaff() && !isPumpAttendant()) {
+     $_SESSION['error'] = "Access denied.";
+     header("Location: index.php");
+     exit();
+ }
 
 // Fetch share config for stock
 $config = $pdo->query("SELECT * FROM share_config ORDER BY id DESC LIMIT 1")->fetch();
@@ -149,7 +149,7 @@ include 'includes/header.php';
                             <span class="badge <?php echo $badge; ?>"><?php echo $req['status']; ?></span>
                         </td>
                         <td class="text-end pe-4">
-                            <?php if ($req['status'] == 'Pending' && (isAdmin() || isStaff() || isReceptionist())): ?>
+                            <?php if ($req['status'] == 'Pending' && (isAdmin() || isStaff() || isPumpAttendant())): ?>
                                 <form method="POST" class="d-inline">
                                     <input type="hidden" name="request_id" value="<?php echo $req['request_id']; ?>">
                                     <input type="hidden" name="status" value="Staff Approved">

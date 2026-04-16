@@ -1,9 +1,9 @@
 <?php
 require_once 'includes/auth_middleware.php';
-if (isStaff() || isReceptionist()) {
-    header("Location: receptionist_dashboard.php");
-    exit();
-}
+if (isStaff() || isPumpAttendant()) {
+     header("Location: receptionist_dashboard.php");
+     exit();
+ }
 require_once 'config/database.php';
 include 'includes/header.php';
 

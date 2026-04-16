@@ -153,7 +153,7 @@ $customers = $pdo->query($query)->fetchAll();
     <div class="col">
         <h4 class="mb-0 fw-bold"><i class="bi bi-person-lines-fill me-2 text-info"></i> Recent Customer Activity</h4>
     </div>
-    <?php if (isAdmin() || isStaff()): ?>
+    <?php if (isAdmin()): ?>
     <div class="col-auto">
         <a href="create.php" class="btn btn-info rounded-pill px-4 text-white shadow-sm">
             <i class="bi bi-plus-circle me-1"></i> Add New Customer
@@ -222,17 +222,19 @@ $customers = $pdo->query($query)->fetchAll();
                                    class="btn btn-sm btn-outline-primary rounded-circle" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                <?php if (isAdmin()): ?>
                                 <a href="edit.php?id=<?php echo $customer['customer_id']; ?>" 
                                    class="btn btn-sm btn-outline-info rounded-circle" title="Edit Profile">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <?php if (isAdmin()): ?>
                                 <a href="index.php?delete=<?php echo $customer['customer_id']; ?>" 
                                    class="btn btn-sm btn-outline-danger rounded-circle" 
                                    onclick="return confirm('Are you sure you want to delete this customer? All their records will be removed.')"
                                    title="Delete">
                                     <i class="bi bi-trash"></i>
                                 </a>
+                                <?php else: ?>
+                                    <span class="badge bg-light text-muted border py-1 px-2 small ms-2">View Only</span>
                                 <?php endif; ?>
                             </div>
                         </td>

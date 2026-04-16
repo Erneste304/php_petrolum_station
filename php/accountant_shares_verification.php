@@ -1,5 +1,13 @@
-require_once 'config/database.php';
-requirePermission('accounting');
+<?php
+require_once __DIR__ . '/includes/auth_middleware.php';
+require_once __DIR__ . '/config/database.php';
+
+if (!isAdmin() && !isAccountant()) {
+    $_SESSION['error'] = 'Access denied. This page is for accountants only.';
+    header('Location: index.php');
+    exit;
+}
+
 
 // Handle Accountant Verification
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['verify_request'])) {
@@ -57,7 +65,7 @@ $requests = $pdo->query("
     ORDER BY sr.updated_at DESC
 ")->fetchAll();
 
-include 'includes/header.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <div class="row mb-4 align-items-center">
@@ -157,4 +165,4 @@ include 'includes/header.php';
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>

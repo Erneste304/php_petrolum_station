@@ -31,11 +31,13 @@ $employees = $pdo->query("
     <div class="col">
         <h2><i class="bi bi-people"></i> Employees Management</h2>
     </div>
+    <?php if (isAdmin()): ?>
     <div class="col-auto">
         <a href="create.php" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Add New Employee
         </a>
     </div>
+    <?php endif; ?>
 </div>
 
 <div class="card">
@@ -67,16 +69,20 @@ $employees = $pdo->query("
                         <td><?php echo htmlspecialchars($employee['station_name'] ?? 'N/A'); ?></td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="edit.php?id=<?php echo $employee['employee_id']; ?>" 
-                                   class="btn btn-sm btn-warning" title="Edit">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="index.php?delete=<?php echo $employee['employee_id']; ?>" 
-                                   class="btn btn-sm btn-danger" 
-                                   onclick="return confirm('Are you sure you want to delete this employee?')"
-                                   title="Delete">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <?php if (isAdmin()): ?>
+                                    <a href="edit.php?id=<?php echo $employee['employee_id']; ?>" 
+                                       class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="index.php?delete=<?php echo $employee['employee_id']; ?>" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Are you sure you want to delete this employee?')"
+                                       title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="badge bg-light text-muted border py-2 px-3">View Only</span>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

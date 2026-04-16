@@ -44,6 +44,12 @@ function isReceptionist()
 }
 
 
+function isPumpAttendant()
+{
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'pump_attendant';
+}
+
+
 /**
  * Check if the Accountant has active permission for a specific financial action
  */

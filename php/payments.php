@@ -1,7 +1,15 @@
-require_once 'config/database.php';
-requirePermission('accounting');
+<?php
+require_once __DIR__ . '/includes/auth_middleware.php';
+require_once __DIR__ . '/config/database.php';
 
-include 'includes/header.php';
+if (!isAdmin() && !isAccountant()) {
+    $_SESSION['error'] = 'Access denied. This page is for accountants only.';
+    header('Location: index.php');
+    exit;
+}
+
+
+include __DIR__ . '/includes/header.php';
 
 // Fetch recent payments from fuel sales and services
 $payments = $pdo->query("
@@ -70,4 +78,4 @@ $payments = $pdo->query("
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>

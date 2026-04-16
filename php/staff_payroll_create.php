@@ -1,15 +1,22 @@
-require_once 'config/database.php';
-// Payroll is typically handled by Accountants or Station Receptionists
-requirePermission('reception');
+<?php
+require_once __DIR__ . '/includes/auth_middleware.php';
+require_once __DIR__ . '/config/database.php';
+
+// Allow admin, staff, and receptionist roles
+if (!isAdmin() && !isStaff() && !isPumpAttendant()) {
+     $_SESSION['error'] = 'Access denied. This page is for staff only.';
+     header('Location: index.php');
+     exit;
+ }
 
 // Fetch all active employees
 $employees = $pdo->query("SELECT * FROM employee WHERE is_active = 1")->fetchAll();
 $total_payroll = 0;
-foreach($employees as $e) { $total_payroll += 500000; } // Assuming flat rate for now or fetch from some contract table if exists
+foreach($employees as $e) { $total_payroll += 500000; } // Assuming flat rate for now
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_payroll'])) {
     $notes = $_POST['notes'];
-    $accountant_id = $_SESSION['user_id']; // The one submitting
+    $accountant_id = $_SESSION['user_id'];
 
     try {
         $stmt = $pdo->prepare("INSERT INTO payroll_submissions (station_id, accountant_id, total_amount, status, notes) VALUES (?, ?, ?, 'Pending', ?)");
@@ -22,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_payroll'])) {
     }
 }
 
-include 'includes/header.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <div class="row mb-4">
@@ -92,4 +99,4 @@ include 'includes/header.php';
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>
